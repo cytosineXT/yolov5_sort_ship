@@ -84,11 +84,21 @@ def safe_download(file, url, url2=None, min_bytes=1E0, error_msg=''):
 def attempt_download(file):
     # Attempt file download from GitHub release assets if not found locally. release = 'latest', 'v7.0', etc.
     # file.parent.mkdir(parents=True, exist_ok=True)  # make parent dir (if required)
-    safe_download(file,
+    try:
+        safe_download(file,
                     # url=f'https://raw.githubusercontent.com/cytosineXT/yolov5_ships/main/yolov5s.pt',#github官方，但是需要梯子
                     url=f' https://ghproxy.net/https://raw.githubusercontent.com/cytosineXT/yolov5_newnewship/main/yolov5s.pt',#不需要梯子，国内镜像，但是不知道何时就会失效
                     # min_bytes=1E5,
                     error_msg=f'{file} missing, try to call cytosineXT, or eat MengGu KaoRou rice')
+    except:
+        safe_download(file,
+                    # url=f'https://raw.githubusercontent.com/cytosineXT/yolov5_ships/main/yolov5s.pt',#github官方，但是需要梯子
+                    url=f' https://ghproxy.com/https://raw.githubusercontent.com/cytosineXT/yolov5_sort_ship/main/yolov5s.pt',#不需要梯子，国内镜像，但是不知道何时就会失效
+                    # min_bytes=1E5,
+                    error_msg=f'{file} missing, try to call cytosineXT, or eat MengGu KaoRou rice')
+    
+
+
     return str(file)
 
 # def attempt_download(file, repo='ultralytics/yolov5', release='v7.0'):
