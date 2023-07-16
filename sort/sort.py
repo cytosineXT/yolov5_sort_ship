@@ -20,10 +20,6 @@ from __future__ import print_function
 
 import os
 import numpy as np
-import matplotlib
-matplotlib.use('TkAgg')
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
 from skimage import io
 
 import glob
@@ -289,13 +285,6 @@ if __name__ == '__main__':
   #3. total_time和total_frames: 这两个变量用于计算跟踪的总时间和总帧数。
   colours = np.random.rand(32, 3) #used only for display
   #4. colours: 这个变量是一个随机生成的颜色数组，仅用于在显示跟踪结果时为不同的目标分配不同的颜色。
-  if(display):
-    if not os.path.exists('mot_benchmark'):
-      print('\n\tERROR: mot_benchmark link not found!\n\n    Create a symbolic link to the MOT benchmark\n    (https://motchallenge.net/data/2D_MOT_2015/#download). E.g.:\n\n    $ ln -s /path/to/MOT2015_challenge/2DMOT2015 mot_benchmark\n\n')
-      exit()
-    plt.ion()
-    fig = plt.figure()
-    ax1 = fig.add_subplot(111, aspect='equal')
   if not os.path.exists('output'):
     os.makedirs('output')
 #5. if(display):和if not os.path.exists('output'):: 这两个条件语句用于检查是否应该显示跟踪结果和创建输出文件夹。
@@ -323,12 +312,6 @@ if __name__ == '__main__':
         dets[:, 2:4] += dets[:, 0:2] #convert to [x1,y1,w,h] to [x1,y1,x2,y2]
         total_frames += 1
 
-        if(display):
-          fn = os.path.join('mot_benchmark', phase, seq, 'img1', '%06d.jpg'%(frame))
-          im =io.imread(fn)
-          ax1.imshow(im)
-          plt.title(seq + ' Tracked Targets')
-
 #然后再在这步将dets送入tracker.update()进行更新，更新得到各号id
         start_time = time.time()
         trackers = mot_tracker.update(dets)
@@ -341,14 +324,7 @@ if __name__ == '__main__':
           print('%d,%d,%.2f,%.2f,%.2f,%.2f,1,-1,-1,-1'%(frame,d[4],d[0],d[1],d[2]-d[0],d[3]-d[1]),
           file=out_file)
       #说明是跑完一帧就存一次图，这一帧和后面的结果没关系，所以detect.py里一帧一帧的处理没问题的，每一帧都用的是同一个Sort类
-          if(display):
-            d = d.astype(np.int32)
-            ax1.add_patch(patches.Rectangle((d[0],d[1]),d[2]-d[0],d[3]-d[1],fill=False,lw=3,ec=colours[d[4]%32,:]))
 
-        if(display):
-          fig.canvas.flush_events()
-          plt.draw()
-          ax1.cla()
 #----------------------------------------------------------------------------↑这里是一帧的循环
 
   print("Total Tracking took: %.3f seconds for %d frames or %.1f FPS" % (total_time, total_frames, total_frames / total_time))
